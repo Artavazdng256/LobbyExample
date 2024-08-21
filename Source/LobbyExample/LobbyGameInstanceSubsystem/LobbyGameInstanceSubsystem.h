@@ -20,6 +20,8 @@ private:
 	
 	TSharedPtr<IWebSocket> WebSocket;
 
+	uint8 bDebug : 1;
+
 public:
 
 	
@@ -31,6 +33,10 @@ public:
 	~ULobbyGameInstanceSubsystem();
 
 private:
+
+
+	FString GenerateSignature(const FString& NewClientSecret, const FString& NewRequestBodyString, const FString& NewClientId, int64 NewTimestamp);
+
 	
 	void OnConnected();
 

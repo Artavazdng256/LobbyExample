@@ -4,7 +4,16 @@
 #include "LobbyGameInstanceSubsystem.h"
 #include "WebSocketsModule.h"
 
+namespace OpenSSLWrapper
+{
+#include "openssl/hmac.h"
+#include "openssl/evp.h"
+#include "Misc/Guid.h"
+}
+
+
 ULobbyGameInstanceSubsystem::ULobbyGameInstanceSubsystem()
+	: bDebug(true)
 {
 	// Initialize the WebSocket module
 	FModuleManager::Get().LoadModuleChecked<FWebSocketsModule>("WebSockets");	
@@ -16,6 +25,41 @@ ULobbyGameInstanceSubsystem::~ULobbyGameInstanceSubsystem()
 	{
 		WebSocket->Close();
 	}
+}
+
+FString ULobbyGameInstanceSubsystem::GenerateSignature(const FString& NewClientSecret, const FString& NewRequestBodyString, const FString& NewClientId, int64 NewTimestamp)
+{
+	// Use FString instead of std::string
+	FString SecretStr = NewClientSecret;
+	FString Body = NewRequestBodyString;
+
+	FString MessageStr = NewClientId + FString::Printf(TEXT("%lld"), NewTimestamp) + Body;
+	if (bDebug)
+	{
+		UE_LOG(LogTemp, Log, TEXT("----------------- Message ----------------------"));
+		UE_LOG(LogTemp, Log, TEXT("%s"), *MessageStr);
+		UE_LOG(LogTemp, Log, TEXT("----------------- Message ----------------------"));
+	}
+
+	// HMAC-SHA256 computation
+	unsigned char Result[64];
+	unsigned int ResultLength;
+
+	// Convert FString to UTF-8 encoded char* for HMAC computation
+	FTCHARToUTF8 SecretUtf8(*SecretStr);
+	FTCHARToUTF8 MessageUtf8(*MessageStr);
+
+	OpenSSLWrapper::HMAC(OpenSSLWrapper::EVP_sha256(), SecretUtf8.Get(), SecretUtf8.Length(),
+		reinterpret_cast<const unsigned char*>(MessageUtf8.Get()), MessageUtf8.Length(),
+		Result, &ResultLength);
+
+	// Convert result to hex string
+	FString Signature = BytesToHex(Result, ResultLength);
+	if (bDebug)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Signature : %s"), *Signature);
+	}
+	return Signature.ToLower();
 }
 
 void ULobbyGameInstanceSubsystem::OnConnected()
