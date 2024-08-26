@@ -7,6 +7,35 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "LobbyGameInstanceSubsystem.generated.h"
 
+// TODO need to move this information into Data Asset or ini file
+USTRUCT(Blueprintable)
+struct FJWTConfig
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite)
+	FString ClientSecret = "4ab90ddc-caa3-42e0-ba9f-d985b9524660";
+
+	UPROPERTY(BlueprintReadWrite)
+	FString ClientId = "jGKD8Ceh1VOHCQdMlDtStIYHXDIdyCjE";
+
+};
+
+
+namespace NGG_LOBBY_PROTOCOL 
+{
+	enum PRATACOL
+	{
+		  CLIENT_ID = 0x0
+		, TIMESTAMP = 0x1
+		, JSON      = 0x2
+		, SIGNATURE = 0x3
+	};
+	const int32 PART_PRATACOL_COUNT = 4;
+};
+
+
+
 /**
  * 
  */
@@ -21,6 +50,9 @@ private:
 	TSharedPtr<IWebSocket> WebSocket;
 
 	uint8 bDebug : 1;
+	
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess=true))
+	FJWTConfig JWTConfig;
 
 public:
 
@@ -35,7 +67,6 @@ public:
 private:
 
 
-	FString GenerateSignature(const FString& NewClientSecret, const FString& NewRequestBodyString, const FString& NewClientId, int64 NewTimestamp);
 
 	
 	void OnConnected();
@@ -45,6 +76,27 @@ private:
 	void OnMessageReceived(const FString& NewMessage);
 
 	void OnClosed(int32 NewStatusCode, const FString& NewReason, bool NewWasClean);
+
+private:
+
+	FString GenerateSignature(const FString& NewClientSecret, const FString& NewRequestBodyString, const FString& NewClientId, int64 NewTimestamp) const;
+
+	FString MakeSendData(const FString& NewRequestBodyString, const FString& NewClientId, int64 NewTimestamp, const FString& NewSignature = "") const;
+
+	TArray<FString> ParsReceivedData(const FString & NewReceivedData) const;
+
+	bool IsValidSignature(const TArray<FString>& NewReceivedData, const FString& NewReceivedSignature) const;
+
+	FString GetClientSecret() const;
+
+	FString GetClientId() const;
+
+	void CookingDataAndSendToClient(const FString& NewData);
+	
+	bool CheckClientDataIsValid(const TArray<FString>& NewClientDataStringArray);
+
+	int64 GetTimestamp() const;
+
 	
 public:
 	
