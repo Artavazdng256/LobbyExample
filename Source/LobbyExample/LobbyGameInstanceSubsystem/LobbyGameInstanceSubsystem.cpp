@@ -89,7 +89,20 @@ void ULobbyGameInstanceSubsystem::OnConnectionError(const FString& NewError)
 
 void ULobbyGameInstanceSubsystem::OnMessageReceived(const FString& NewMessage)
 {
-	UE_LOG(LogTemp, Log, TEXT("WebSocket message received: %s"), *NewMessage);	
+	TArray<FString> ReceivedData =  ParsReceivedData(NewMessage);
+	if (bool IsValidProtocol = CheckClientDataIsValid(ReceivedData); IsValidProtocol)
+	{
+		if (bDebug)
+		{
+			UE_LOG(LogTemp, Log, TEXT("Valid Data, WebSocket message received: %s"), *NewMessage);	
+		}
+		
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("The data is not valid please check it, data : %s"), *NewMessage);	
+	}
+
 }
 
 void ULobbyGameInstanceSubsystem::OnClosed(int32 NewStatusCode, const FString& NewReason, bool NewWasClean)
@@ -145,7 +158,6 @@ void ULobbyGameInstanceSubsystem::CookingDataAndSendToClient(const FString& NewD
 		FString DataWithoutSignature = MakeSendData(NewData, ClientId, Timestamp);
 		FString Signature = GenerateSignature(ClientSecret, NewData, ClientId, Timestamp);
 		FString CookedData = MakeSendData(NewData, ClientId, Timestamp, Signature);
-
 		WebSocket->Send(CookedData);
 	}
 	else
@@ -239,7 +251,7 @@ void ULobbyGameInstanceSubsystem::SendMessage(FString NewMessage)
 	if(WebSocket.IsValid())
 	{
 		UE_LOG(LogTemp, Log, TEXT("NewMessage = %s"), *NewMessage);
-		WebSocket->Send(NewMessage);
+		CookingDataAndSendToClient(NewMessage);
 	}
 }
 
