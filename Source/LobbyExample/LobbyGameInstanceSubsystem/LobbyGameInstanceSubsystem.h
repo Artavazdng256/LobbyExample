@@ -34,12 +34,38 @@ namespace NGG_LOBBY_PROTOCOL
 	const int32 PART_PRATACOL_COUNT = 4;
 };
 
+UENUM(Blueprintable)
+enum class ELobbyActionType : uint8
+{
+	 NONE    UMETA(DisplayName = "None")
+	,DATABASE    UMETA(DisplayName = "Data Base")
+	,TEXT_CHAT   UMETA(DisplayName = "Text Chat")
+	,FIND_PLAYER UMETA(DisplayName = "Find Player")
+};
 
+
+USTRUCT(Bluprintable)
+struct NGGLobbyData
+{
+	UPROPERTY(BlueprintReadWrite)
+	FString ClientID = "";
+
+	UPROPERTY(BlueprintReadWrite)
+	ELobbyActionType Action = ELobbyActionType::NONE;
+
+	/**
+	* 
+	* The PlayLoadData can be JSON data
+	*/
+	UPROPERTY(BlueprintReadWrite)
+	FString PayLoadData = "";
+
+};
 
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable, Blueprinttype)
 class LOBBYEXAMPLE_API ULobbyGameInstanceSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
