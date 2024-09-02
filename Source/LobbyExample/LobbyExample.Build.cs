@@ -8,7 +8,7 @@ public class LobbyExample : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "HTTP", "WebSockets", "OpenSSL" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "HTTP", "WebSockets", "OpenSSL", "Json", "JsonUtilities" });
 		PublicIncludePaths.Add("LobbyExample");
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

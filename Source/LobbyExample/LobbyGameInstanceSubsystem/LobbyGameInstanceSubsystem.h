@@ -44,18 +44,26 @@ enum class ELobbyActionType : uint8
 };
 
 
-USTRUCT(Bluprintable)
-struct NGGLobbyData
+USTRUCT(Blueprintable)
+struct FNGGLobbyData
 {
+	GENERATED_BODY()
+
+	/**
+	* Client custom ID
+	*/
 	UPROPERTY(BlueprintReadWrite)
 	FString ClientID = "";
 
+	/**
+	* The Lobby action type
+	*/
 	UPROPERTY(BlueprintReadWrite)
 	ELobbyActionType Action = ELobbyActionType::NONE;
 
 	/**
 	* 
-	* The PlayLoadData can be JSON data
+	* The PayLoadData can be JSON data
 	*/
 	UPROPERTY(BlueprintReadWrite)
 	FString PayLoadData = "";
@@ -72,11 +80,19 @@ class LOBBYEXAMPLE_API ULobbyGameInstanceSubsystem : public UGameInstanceSubsyst
 
 private:
 
-	
+	/**
+	* Web socket 
+	*/
 	TSharedPtr<IWebSocket> WebSocket;
-
-	uint8 bDebug : 1;
 	
+	/**
+	* bDebug if ture then write log	
+	*/
+	uint8 bDebug : 1;
+
+	/**
+	*	JWET Config TODO the JWTConfig must read from DataAsset	
+	*/
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess=true))
 	FJWTConfig JWTConfig;
 
@@ -130,7 +146,10 @@ public:
 	void ConnectToLobbyServer(const FString & NewURL);
 
 	UFUNCTION(BlueprintCallable)
-	void SendMessage(FString NewMessage);
+	void SendMessage(FString NewStringData);
+
+	UFUNCTION(BlueprintCallable)
+	void SendData(const FNGGLobbyData & NewNGGLobbyData);
 
 	
 	

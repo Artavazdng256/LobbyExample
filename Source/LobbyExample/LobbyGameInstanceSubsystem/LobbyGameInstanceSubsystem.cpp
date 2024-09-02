@@ -3,12 +3,13 @@
 
 #include "LobbyGameInstanceSubsystem.h"
 #include "WebSocketsModule.h"
+#include <JsonObjectConverter.h>
 
 namespace OpenSSLWrapper
 {
-#include "openssl/hmac.h"
-#include "openssl/evp.h"
-#include "Misc/Guid.h"
+	#include "openssl/hmac.h"
+	#include "openssl/evp.h"
+	#include "Misc/Guid.h"
 }
 
 
@@ -246,12 +247,19 @@ void ULobbyGameInstanceSubsystem::ConnectToLobbyServer(const FString& NewURL)
 	
 }
 
-void ULobbyGameInstanceSubsystem::SendMessage(FString NewMessage)
+void ULobbyGameInstanceSubsystem::SendMessage(FString NewStringData)
 {
 	if(WebSocket.IsValid())
 	{
-		UE_LOG(LogTemp, Log, TEXT("NewMessage = %s"), *NewMessage);
-		CookingDataAndSendToClient(NewMessage);
+		UE_LOG(LogTemp, Log, TEXT("NewStringData = %s"), *NewStringData);
+		CookingDataAndSendToClient(NewStringData);
 	}
+}
+
+void ULobbyGameInstanceSubsystem::SendData(const FNGGLobbyData& NewNGGLobbyData)
+{
+	FString JsonString{};
+	FJsonObjectConverter::UStructToJsonObjectString(NewNGGLobbyData, JsonString);
+	SendMessage(JsonString);
 }
 
