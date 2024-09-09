@@ -259,7 +259,7 @@ void ULobbyGameInstanceSubsystem::SendMessage(FString NewStringData)
 void ULobbyGameInstanceSubsystem::SendData(const FNGGLobbyData& NewNGGLobbyData)
 {
 	FString JsonString{};
-	FJsonObjectConverter::UStructToJsonObjectString(NewNGGLobbyData, JsonString);
+	FJsonObjectConverter::UStructToJsonObjectString<FNGGLobbyData>(NewNGGLobbyData, JsonString);
 	SendMessage(JsonString);
 }
 

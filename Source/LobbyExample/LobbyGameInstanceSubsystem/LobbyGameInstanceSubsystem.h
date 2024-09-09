@@ -44,29 +44,30 @@ enum class ELobbyActionType : uint8
 };
 
 
-USTRUCT(Blueprintable)
-struct FNGGLobbyData
+USTRUCT(BlueprintType, Blueprintable)
+struct FNGGLobbyData 
 {
 	GENERATED_BODY()
 
 	/**
 	* Client custom ID
 	*/
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, Meta = (DisplayName = "ClientID"))
 	FString ClientID = "";
 
 	/**
 	* The Lobby action type
 	*/
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, Meta = (DisplayName = "Action"))
 	ELobbyActionType Action = ELobbyActionType::NONE;
 
 	/**
 	* 
 	* The PayLoadData can be JSON data
 	*/
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, Meta = (DisplayName = "PayLoadData"))
 	FString PayLoadData = "";
+
 
 };
 
