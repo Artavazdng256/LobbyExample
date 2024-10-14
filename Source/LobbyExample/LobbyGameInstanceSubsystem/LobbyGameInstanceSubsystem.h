@@ -71,6 +71,21 @@ struct FNGGLobbyData
 
 };
 
+USTRUCT(BlueprintType, Blueprintable)
+struct FChatData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite, Meta = (DisplayName = "SenderPlayerId"))
+	FString SenderPlayerId = "";
+
+	UPROPERTY(BlueprintReadWrite, Meta = (DisplayName = "Message"))
+	FString Message = "";
+
+	UPROPERTY(BlueprintReadWrite, Meta = (DisplayName = "RecipientPlayerId"))
+	FString RecipientPlayerId = "";
+};
+
 /**
  * 
  */
@@ -142,15 +157,16 @@ private:
 
 	
 public:
+
 	
 	UFUNCTION(BlueprintCallable)
 	void ConnectToLobbyServer(const FString & NewURL);
 
 	UFUNCTION(BlueprintCallable)
-	void SendMessage(FString NewStringData);
+	void SendData(const FNGGLobbyData & NewNGGLobbyData);
 
 	UFUNCTION(BlueprintCallable)
-	void SendData(const FNGGLobbyData & NewNGGLobbyData);
+	void SendChatMessage(const FChatData & NewChatData);
 
 	
 	

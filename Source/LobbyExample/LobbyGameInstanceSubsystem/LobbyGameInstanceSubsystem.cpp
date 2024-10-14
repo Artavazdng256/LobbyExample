@@ -247,19 +247,26 @@ void ULobbyGameInstanceSubsystem::ConnectToLobbyServer(const FString& NewURL)
 	
 }
 
-void ULobbyGameInstanceSubsystem::SendMessage(FString NewStringData)
-{
-	if(WebSocket.IsValid())
-	{
-		UE_LOG(LogTemp, Log, TEXT("NewStringData = %s"), *NewStringData);
-		CookingDataAndSendToClient(NewStringData);
-	}
-}
 
 void ULobbyGameInstanceSubsystem::SendData(const FNGGLobbyData& NewNGGLobbyData)
 {
+	if (WebSocket.IsValid())
+	{
+		FString JsonString{};
+		FJsonObjectConverter::UStructToJsonObjectString<FNGGLobbyData>(NewNGGLobbyData, JsonString);
+		UE_LOG(LogTemp, Log, TEXT("NewStringData = %s"), *JsonString);
+		CookingDataAndSendToClient(JsonString);
+	}
+}
+
+void ULobbyGameInstanceSubsystem::SendChatMessage(const FChatData & NewChatData)
+{
 	FString JsonString{};
-	FJsonObjectConverter::UStructToJsonObjectString<FNGGLobbyData>(NewNGGLobbyData, JsonString);
-	SendMessage(JsonString);
+	FJsonObjectConverter::UStructToJsonObjectString<FChatData>(NewChatData, JsonString);
+	FNGGLobbyData LobbyData{};
+	LobbyData.Action = ELobbyActionType::TEXT_CHAT;
+	LobbyData.ClientID = NewChatData.SenderPlayerId;
+	LobbyData.PayLoadData = JsonString;
+	SendData(LobbyData);
 }
 
