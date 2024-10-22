@@ -270,3 +270,12 @@ void ULobbyGameInstanceSubsystem::SendChatMessage(const FChatData & NewChatData)
 	SendData(LobbyData);
 }
 
+void ULobbyGameInstanceSubsystem::RegisterPlayerIntoLobby(const FString & NewPlayerId)
+{
+	FNGGLobbyData LobbyData{};
+	LobbyData.Action = ELobbyActionType::REGISTER_PLAYER_INTO_LOBBY;
+	LobbyData.ClientID = NewPlayerId;
+	LobbyData.PayLoadData = "";
+	SendData(LobbyData);
+}
+

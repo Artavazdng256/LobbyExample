@@ -37,10 +37,11 @@ namespace NGG_LOBBY_PROTOCOL
 UENUM(Blueprintable)
 enum class ELobbyActionType : uint8
 {
-	 NONE    UMETA(DisplayName = "None")
-	,DATABASE    UMETA(DisplayName = "Data Base")
-	,TEXT_CHAT   UMETA(DisplayName = "Text Chat")
-	,FIND_PLAYER UMETA(DisplayName = "Find Player")
+	 NONE						UMETA(DisplayName = "None")
+	,DATABASE					UMETA(DisplayName = "Data Base")
+	,TEXT_CHAT					UMETA(DisplayName = "Text Chat")
+	,FIND_PLAYER				UMETA(DisplayName = "Find Player")
+	,REGISTER_PLAYER_INTO_LOBBY UMETA(DisplayName = "Register Player")  
 };
 
 
@@ -168,6 +169,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SendChatMessage(const FChatData & NewChatData);
 
+	UFUNCTION(BlueprintCallable)
+	void RegisterPlayerIntoLobby(const FString & NewPlayerId);
 	
 	
 	
