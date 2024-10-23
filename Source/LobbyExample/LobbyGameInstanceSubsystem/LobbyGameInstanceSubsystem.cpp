@@ -114,27 +114,28 @@ void ULobbyGameInstanceSubsystem::OnClosed(int32 NewStatusCode, const FString& N
 TArray<FString> ULobbyGameInstanceSubsystem::ParsReceivedData(const FString& NewReceivedData) const
 {
 	TArray<FString> R_ParsedData{};
-    FString ClientID = NewReceivedData.Left(32);
-    R_ParsedData.Add(ClientID);
+	R_ParsedData.Add(NewReceivedData.Left(32));  // Client ID
 
-    int32 JsonStartIndex;
-    int32 JsonEndIndex;
+	int32 JsonStartIndex, BraceCount = 0, JsonEndIndex = -1;
+	if (!NewReceivedData.FindChar('{', JsonStartIndex))
+	{
+		return R_ParsedData;
+	}
 
-    if (!NewReceivedData.FindChar('{', JsonStartIndex) || !NewReceivedData.FindChar('}', JsonEndIndex))
-    {
-        UE_LOG(LogTemp, Warning, TEXT("ParseReceivedData function Error: JSON body not found."));
-        return R_ParsedData;
-    }
+	// Find the matching closing brace
+	for (int32 i = JsonStartIndex; i < NewReceivedData.Len(); ++i)
+	{
+		BraceCount += (NewReceivedData[i] == '{') ? 1 : (NewReceivedData[i] == '}') ? -1 : 0;
+		if (BraceCount == 0) { JsonEndIndex = i; break; }
+	}
+	if (JsonEndIndex == -1)
+	{
+		return R_ParsedData;
+	}
 
-    FString Timestamp = NewReceivedData.Mid(32, JsonStartIndex - 32);
-    R_ParsedData.Add(Timestamp);
-
-    FString JsonBody = NewReceivedData.Mid(JsonStartIndex, (JsonEndIndex - JsonStartIndex) + 1);
-    R_ParsedData.Add(JsonBody);
-
-    FString Signature = NewReceivedData.Mid(JsonEndIndex + 1);
-    R_ParsedData.Add(Signature);
-	
+	R_ParsedData.Add(NewReceivedData.Mid(32, JsonStartIndex - 32));  // Timestamp
+	R_ParsedData.Add(NewReceivedData.Mid(JsonStartIndex, (JsonEndIndex - JsonStartIndex) + 1));  // JSON body
+	R_ParsedData.Add(NewReceivedData.Mid(JsonEndIndex + 1));  // Signature
 	return R_ParsedData;
 }
 
