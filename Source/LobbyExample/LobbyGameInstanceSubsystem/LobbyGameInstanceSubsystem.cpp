@@ -271,6 +271,17 @@ void ULobbyGameInstanceSubsystem::SendChatMessage(const FChatData & NewChatData)
 	SendData(LobbyData);
 }
 
+void ULobbyGameInstanceSubsystem::SendDBRequest(const FChatData& NewChatData)
+{
+	FString JsonString{};
+	FJsonObjectConverter::UStructToJsonObjectString<FChatData>(NewChatData, JsonString);
+	FNGGLobbyData LobbyData{};
+	LobbyData.Action = ELobbyActionType::DATABASE;
+	LobbyData.ClientID = NewChatData.SenderPlayerId;
+	LobbyData.PayLoadData = JsonString;
+	SendData(LobbyData);
+}
+
 void ULobbyGameInstanceSubsystem::RegisterPlayerIntoLobby(const FString & NewPlayerId)
 {
 	FNGGLobbyData LobbyData{};

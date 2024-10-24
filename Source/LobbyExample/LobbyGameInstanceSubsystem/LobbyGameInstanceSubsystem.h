@@ -170,6 +170,9 @@ public:
 	void SendChatMessage(const FChatData & NewChatData);
 
 	UFUNCTION(BlueprintCallable)
+	void SendDBRequest(const FChatData& NewChatData);
+
+	UFUNCTION(BlueprintCallable)
 	void RegisterPlayerIntoLobby(const FString & NewPlayerId);
 	
 	
