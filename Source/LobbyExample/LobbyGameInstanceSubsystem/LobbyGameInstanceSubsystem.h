@@ -41,7 +41,8 @@ enum class ELobbyActionType : uint8
 	,DATABASE					UMETA(DisplayName = "Data Base")
 	,TEXT_CHAT					UMETA(DisplayName = "Text Chat")
 	,FIND_PLAYER				UMETA(DisplayName = "Find Player")
-	,REGISTER_PLAYER_INTO_LOBBY UMETA(DisplayName = "Register Player")  
+	,REGISTER_PLAYER_INTO_LOBBY UMETA(DisplayName = "Register Player")
+	,REQUEST_STATUS 			UMETA(DisplayName = "Request Status")
 };
 
 
@@ -68,6 +69,12 @@ struct FNGGLobbyData
 	*/
 	UPROPERTY(BlueprintReadWrite, Meta = (DisplayName = "PayLoadData"))
 	FString PayLoadData = "";
+
+	/**
+	 *	The Request id  
+	 */
+	UPROPERTY(BlueprintReadWrite, Meta = (DisplayName = "RequestId"))
+	FString requestId = "";
 
 
 };
@@ -159,21 +166,23 @@ private:
 	
 public:
 
+	FString GenerateRequestUniqueId() const;
+
 	
 	UFUNCTION(BlueprintCallable)
 	void ConnectToLobbyServer(const FString & NewURL);
 
 	UFUNCTION(BlueprintCallable)
-	void SendData(const FNGGLobbyData & NewNGGLobbyData);
+	FString SendData(const FNGGLobbyData& NewNGGLobbyData);
 
 	UFUNCTION(BlueprintCallable)
-	void SendChatMessage(const FChatData & NewChatData);
+	FString SendChatMessage(const FChatData& NewChatData);
 
 	UFUNCTION(BlueprintCallable)
-	void SendDBRequest(const FChatData& NewChatData);
+	FString SendDBRequest(const FChatData& NewChatData);
 
 	UFUNCTION(BlueprintCallable)
-	void RegisterPlayerIntoLobby(const FString & NewPlayerId);
+	FString RegisterPlayerIntoLobby(const FString& NewPlayerId);
 	
 	
 	

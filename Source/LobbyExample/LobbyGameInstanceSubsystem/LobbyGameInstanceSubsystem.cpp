@@ -197,6 +197,15 @@ int64 ULobbyGameInstanceSubsystem::GetTimestamp() const
     return Timestamp;	
 }
 
+FString ULobbyGameInstanceSubsystem::GenerateRequestUniqueId() const
+{
+	// Generate a new GUID
+	FGuid UniqueId = FGuid::NewGuid();
+	// Convert the GUID to a string and return it
+	FString R_RequestId = UniqueId.ToString(EGuidFormats::DigitsWithHyphens);
+	return R_RequestId;
+}
+
 
 bool ULobbyGameInstanceSubsystem::IsValidSignature(const TArray<FString>& NewReceivedData, const FString& NewReceivedSignature) const
 {
@@ -249,7 +258,7 @@ void ULobbyGameInstanceSubsystem::ConnectToLobbyServer(const FString& NewURL)
 }
 
 
-void ULobbyGameInstanceSubsystem::SendData(const FNGGLobbyData& NewNGGLobbyData)
+FString ULobbyGameInstanceSubsystem::SendData(const FNGGLobbyData& NewNGGLobbyData)
 {
 	if (WebSocket.IsValid())
 	{
@@ -258,9 +267,10 @@ void ULobbyGameInstanceSubsystem::SendData(const FNGGLobbyData& NewNGGLobbyData)
 		UE_LOG(LogTemp, Log, TEXT("NewStringData = %s"), *JsonString);
 		CookingDataAndSendToClient(JsonString);
 	}
+	return NewNGGLobbyData.requestId;
 }
 
-void ULobbyGameInstanceSubsystem::SendChatMessage(const FChatData & NewChatData)
+FString ULobbyGameInstanceSubsystem::SendChatMessage(const FChatData& NewChatData)
 {
 	FString JsonString{};
 	FJsonObjectConverter::UStructToJsonObjectString<FChatData>(NewChatData, JsonString);
@@ -268,10 +278,12 @@ void ULobbyGameInstanceSubsystem::SendChatMessage(const FChatData & NewChatData)
 	LobbyData.Action = ELobbyActionType::TEXT_CHAT;
 	LobbyData.ClientID = NewChatData.SenderPlayerId;
 	LobbyData.PayLoadData = JsonString;
-	SendData(LobbyData);
+	LobbyData.requestId = GenerateRequestUniqueId();
+	FString R_RequestId = SendData(LobbyData);
+	return R_RequestId;
 }
 
-void ULobbyGameInstanceSubsystem::SendDBRequest(const FChatData& NewChatData)
+FString ULobbyGameInstanceSubsystem::SendDBRequest(const FChatData& NewChatData)
 {
 	FString JsonString{};
 	FJsonObjectConverter::UStructToJsonObjectString<FChatData>(NewChatData, JsonString);
@@ -279,15 +291,19 @@ void ULobbyGameInstanceSubsystem::SendDBRequest(const FChatData& NewChatData)
 	LobbyData.Action = ELobbyActionType::DATABASE;
 	LobbyData.ClientID = NewChatData.SenderPlayerId;
 	LobbyData.PayLoadData = JsonString;
-	SendData(LobbyData);
+	LobbyData.requestId = GenerateRequestUniqueId();
+	FString R_RequestId = SendData(LobbyData);
+	return R_RequestId;
 }
 
-void ULobbyGameInstanceSubsystem::RegisterPlayerIntoLobby(const FString & NewPlayerId)
+FString ULobbyGameInstanceSubsystem::RegisterPlayerIntoLobby(const FString& NewPlayerId)
 {
 	FNGGLobbyData LobbyData{};
 	LobbyData.Action = ELobbyActionType::REGISTER_PLAYER_INTO_LOBBY;
 	LobbyData.ClientID = NewPlayerId;
 	LobbyData.PayLoadData = "";
-	SendData(LobbyData);
+	LobbyData.requestId = GenerateRequestUniqueId();
+	FString R_RequestId =  SendData(LobbyData);
+	return R_RequestId;
 }
 
