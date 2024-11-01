@@ -283,13 +283,13 @@ FString ULobbyGameInstanceSubsystem::SendChatMessage(const FChatData& NewChatDat
 	return R_RequestId;
 }
 
-FString ULobbyGameInstanceSubsystem::SendDBRequest(const FChatData& NewChatData)
+FString ULobbyGameInstanceSubsystem::SendDBRequest(const FMongoDBData& NewMongoDBdata)
 {
 	FString JsonString{};
-	FJsonObjectConverter::UStructToJsonObjectString<FChatData>(NewChatData, JsonString);
+	FJsonObjectConverter::UStructToJsonObjectString<FMongoDBData>(NewMongoDBdata, JsonString);
 	FNGGLobbyData LobbyData{};
 	LobbyData.Action = ELobbyActionType::DATABASE;
-	LobbyData.ClientID = NewChatData.SenderPlayerId;
+	LobbyData.ClientID = NewMongoDBdata.SenderPlayerId;
 	LobbyData.PayLoadData = JsonString;
 	LobbyData.requestId = GenerateRequestUniqueId();
 	FString R_RequestId = SendData(LobbyData);

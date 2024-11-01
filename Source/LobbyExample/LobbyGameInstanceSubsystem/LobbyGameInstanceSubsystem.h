@@ -45,6 +45,13 @@ enum class ELobbyActionType : uint8
 	,REQUEST_STATUS 			UMETA(DisplayName = "Request Status")
 };
 
+UENUM(Blueprintable)
+enum class EMongoDBActionType : uint8
+{
+	NONE						UMETA(DisplayName = "None")
+   ,FIND						UMETA(DisplayName = "Find")
+};
+
 
 USTRUCT(BlueprintType, Blueprintable)
 struct FNGGLobbyData 
@@ -92,6 +99,32 @@ struct FChatData
 
 	UPROPERTY(BlueprintReadWrite, Meta = (DisplayName = "RecipientPlayerId"))
 	FString RecipientPlayerId = "";
+};
+
+USTRUCT(BlueprintType, Blueprintable)
+struct FMongoDBData
+{
+	GENERATED_BODY()
+	UPROPERTY(BlueprintReadWrite, Meta = (DisplayName = "SenderPlayerId"))
+	FString SenderPlayerId = "";
+	
+	UPROPERTY(BlueprintReadWrite, Meta = (DisplayName = "DbName"))
+	FString DbName = "";
+
+	UPROPERTY(BlueprintReadWrite, Meta = (DisplayName = "CollectionName"))
+	FString CollectionName = "";
+
+	UPROPERTY(BlueprintReadWrite, Meta = (DisplayName = "DbAction"))
+	EMongoDBActionType DbAction = EMongoDBActionType::NONE;
+
+	UPROPERTY(BlueprintReadWrite, Meta = (DisplayName = "Data"))
+	FString Data = "";
+
+	UPROPERTY(BlueprintReadWrite, Meta = (DisplayName = "Filter"))
+	FString Filter = "";
+
+	UPROPERTY(BlueprintReadWrite, Meta = (DisplayName = "Options"))
+	FString Options = "";
 };
 
 /**
@@ -179,7 +212,7 @@ public:
 	FString SendChatMessage(const FChatData& NewChatData);
 
 	UFUNCTION(BlueprintCallable)
-	FString SendDBRequest(const FChatData& NewChatData);
+	FString SendDBRequest(const FMongoDBData& NewMongoDBdata);
 
 	UFUNCTION(BlueprintCallable)
 	FString RegisterPlayerIntoLobby(const FString& NewPlayerId);
