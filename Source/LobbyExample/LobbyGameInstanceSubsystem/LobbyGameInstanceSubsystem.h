@@ -49,7 +49,14 @@ UENUM(Blueprintable)
 enum class EMongoDBActionType : uint8
 {
 	NONE						UMETA(DisplayName = "None")
-   ,FIND						UMETA(DisplayName = "Find")
+	,DROP_COLLECTION			UMETA(DisplayName = "Drop Collection")
+	,CREATE_COLLECTION			UMETA(DisplayName = "Create Collection")
+    ,FIND						UMETA(DisplayName = "Find")
+    ,FIND_WITH_OPTIONS          UMETA(DisplayName = "Find With Options")
+    ,FIND_ONE                   UMETA(DisplayName = "Find One")
+	,FIND_ONE_WITH_OPTIONS      UMETA(DisplayName = "Find One With Options")
+	,INSERT_ONE                 UMETA(DisplayName = "Insert One")
+	,INSERT_MANY                UMETA(DisplayName = "Insert Many")
 };
 
 
