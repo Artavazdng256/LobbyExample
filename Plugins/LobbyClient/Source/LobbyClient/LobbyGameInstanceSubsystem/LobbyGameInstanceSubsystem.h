@@ -138,7 +138,7 @@ struct FMongoDBData
  * 
  */
 UCLASS(Blueprintable, Blueprinttype)
-class LOBBYEXAMPLE_API ULobbyGameInstanceSubsystem : public UGameInstanceSubsystem
+class LOBBYCLIENT_API ULobbyGameInstanceSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
