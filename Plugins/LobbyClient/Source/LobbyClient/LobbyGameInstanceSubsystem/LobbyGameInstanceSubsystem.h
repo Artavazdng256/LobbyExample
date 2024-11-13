@@ -58,7 +58,9 @@ enum class EMongoDBActionType : uint8
 	,INSERT_ONE                 UMETA(DisplayName = "Insert One")
 	,INSERT_MANY                UMETA(DisplayName = "Insert Many")
 	,LIST_DATABASES             UMETA(DisplayName = "List Databases")
-	,LIST_COLLECTION_NAMES     UMETA(DisplayName = "List Collection Names")
+	,LIST_COLLECTION_NAMES      UMETA(DisplayName = "List Collection Names")
+	,LIST_INDEXES               UMETA(DisplayName = "List Indexes")
+	,CREATE_INDEX               UMETA(DisplayName = "Create Index")
 };
 
 
