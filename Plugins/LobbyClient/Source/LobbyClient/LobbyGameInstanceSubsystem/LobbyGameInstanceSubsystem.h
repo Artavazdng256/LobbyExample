@@ -57,6 +57,8 @@ enum class EMongoDBActionType : uint8
 	,FIND_ONE_WITH_OPTIONS      UMETA(DisplayName = "Find One With Options")
 	,INSERT_ONE                 UMETA(DisplayName = "Insert One")
 	,INSERT_MANY                UMETA(DisplayName = "Insert Many")
+	,LIST_DATABASES             UMETA(DisplayName = "List Databases")
+	,LIST_COLLECTION_NAMES     UMETA(DisplayName = "List Collection Names")
 };
 
 
