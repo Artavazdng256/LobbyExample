@@ -72,9 +72,9 @@ enum class EMongoDBActionType : uint8
 	,UPDATE_ONE_WITH_OPTIONS 		UMETA(DisplayName = "Update One With Options")
 	,UPDATE_MANY			 		UMETA(DisplayName = "Update Many")
 	,UPDATE_MANY_WITH_OPTIONS 		UMETA(DisplayName = "Update Many with Options")
-	,FIND_AND_DELETE 				UMETA(DisplayName = "Find and delete")
-	,FIND_AND_REPLACE 				UMETA(DisplayName = "Find and Replace")
-	,FIND_AND_UPDATE 				UMETA(DisplayName = "Find and Update")
+	,FIND_ONE_AND_DELETE 			UMETA(DisplayName = "Find one and delete")
+	,FIND_ONE_AND_REPLACE 			UMETA(DisplayName = "Find one and Replace")
+	,FIND_ONE_AND_UPDATE 			UMETA(DisplayName = "Find one and Update")
 };
 
 
