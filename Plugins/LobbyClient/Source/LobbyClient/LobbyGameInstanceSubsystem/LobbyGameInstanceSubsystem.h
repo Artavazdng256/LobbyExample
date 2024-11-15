@@ -65,6 +65,16 @@ enum class EMongoDBActionType : uint8
     ,DELETE_MANY					UMETA(DisplayName = "Delete Many")
     ,GET_ESTIMATED_DOCUMENT_COUNT	UMETA(DisplayName = "Get Estimated Document Count")	
     ,COUNT_DOCUMENTS 				UMETA(DisplayName = "Count Documents")
+    ,RENAME_COLLECTION              UMETA(DisplayName = "Rename Collection")
+	,RUN_COMMAND					UMETA(DisplayName = "Run Command")
+	,REPLACE_ONE					UMETA(DisplayName = "Replace One")
+	,UPDATE_ONE						UMETA(DisplayName = "Update One")
+	,UPDATE_ONE_WITH_OPTIONS 		UMETA(DisplayName = "Update One With Options")
+	,UPDATE_MANY			 		UMETA(DisplayName = "Update Many")
+	,UPDATE_MANY_WITH_OPTIONS 		UMETA(DisplayName = "Update Many with Options")
+	,FIND_AND_DELETE 				UMETA(DisplayName = "Find and delete")
+	,FIND_AND_REPLACE 				UMETA(DisplayName = "Find and Replace")
+	,FIND_AND_UPDATE 				UMETA(DisplayName = "Find and Update")
 };
 
 
