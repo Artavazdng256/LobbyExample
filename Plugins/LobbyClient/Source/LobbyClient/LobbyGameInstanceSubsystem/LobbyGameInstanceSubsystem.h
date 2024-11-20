@@ -221,7 +221,9 @@ private:
 
 	int64 GetTimestamp() const;
 
-	
+	template <typename ValueType>
+	FString ConvertTMapToJson(const TMap<FString, ValueType>& InputMap) const;
+
 public:
 
 	FString GenerateRequestUniqueId() const;

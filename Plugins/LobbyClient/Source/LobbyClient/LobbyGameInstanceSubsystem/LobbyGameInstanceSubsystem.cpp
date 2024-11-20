@@ -197,6 +197,81 @@ int64 ULobbyGameInstanceSubsystem::GetTimestamp() const
     return Timestamp;	
 }
 
+template <typename ValueType>
+FString ULobbyGameInstanceSubsystem::ConvertTMapToJson(const TMap<FString, ValueType>& InputMap) const
+{
+	TSharedRef<FJsonObject> JsonObject = MakeShared<FJsonObject>();
+
+    for (const auto& Pair : InputMap)
+    {
+        if constexpr (std::is_same_v<ValueType, FString>)
+        {
+            JsonObject->SetStringField(Pair.Key, Pair.Value);
+        }
+        else if constexpr (std::is_same_v<ValueType, int32>)
+        {
+            JsonObject->SetNumberField(Pair.Key, static_cast<double>(Pair.Value));
+        }
+		else if constexpr (std::is_same_v<ValueType, float>)
+		{
+			JsonObject->SetNumberField(Pair.Key, static_cast<double>(Pair.Value));
+		}
+        else if constexpr (std::is_same_v<ValueType, bool>)
+        {
+            JsonObject->SetBoolField(Pair.Key, Pair.Value);
+        }
+        else if constexpr (std::is_same_v<ValueType, TMap<FString, FString>>)
+        {
+            TSharedRef<FJsonObject> InnerJsonObject = MakeShared<FJsonObject>();
+            for (const auto& InnerPair : Pair.Value)
+            {
+                InnerJsonObject->SetStringField(InnerPair.Key, InnerPair.Value);
+            }
+            JsonObject->SetObjectField(Pair.Key, InnerJsonObject);
+        }
+        else if constexpr (std::is_same_v<ValueType, TMap<FString, int32>>)
+        {
+            TSharedRef<FJsonObject> InnerJsonObject = MakeShared<FJsonObject>();
+            for (const auto& InnerPair : Pair.Value)
+            {
+                InnerJsonObject->SetNumberField(InnerPair.Key, static_cast<double>(InnerPair.Value));
+            }
+            JsonObject->SetObjectField(Pair.Key, InnerJsonObject);
+        }
+		else if constexpr (std::is_same_v<ValueType, TMap<FString, float>>)
+		{
+			TSharedRef<FJsonObject> InnerJsonObject = MakeShared<FJsonObject>();
+			for (const auto& InnerPair : Pair.Value)
+			{
+			InnerJsonObject->SetNumberField(InnerPair.Key, static_cast<double>(InnerPair.Value));
+			}
+			JsonObject->SetObjectField(Pair.Key, InnerJsonObject);
+		}
+        else if constexpr (std::is_same_v<ValueType, TMap<FString, bool>>)
+        {
+            TSharedRef<FJsonObject> InnerJsonObject = MakeShared<FJsonObject>();
+            for (const auto& InnerPair : Pair.Value)
+            {
+                InnerJsonObject->SetBoolField(InnerPair.Key, InnerPair.Value);
+            }
+            JsonObject->SetObjectField(Pair.Key, InnerJsonObject);
+        }
+        else
+        {
+            static_assert(std::is_same_v<ValueType, void>, "Unsupported value type in TMap.");
+        }
+    }
+
+    FString OutputString;
+    TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&OutputString);
+    if (FJsonSerializer::Serialize(JsonObject, Writer))
+    {
+        return OutputString;
+    }
+
+	return FString("");
+}
+
 FString ULobbyGameInstanceSubsystem::GenerateRequestUniqueId() const
 {
 	// Generate a new GUID
