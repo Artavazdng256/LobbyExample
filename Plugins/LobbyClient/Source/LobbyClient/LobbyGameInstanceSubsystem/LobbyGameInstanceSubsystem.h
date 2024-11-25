@@ -152,6 +152,96 @@ struct FMongoDBData
 	FString Options = "";
 };
 
+USTRUCT(BlueprintType)
+struct FJsonValueStruct
+{
+    GENERATED_BODY()
+
+public:
+    // The type of JSON value
+    EJson Type = EJson::None;
+
+    // Stored value
+    TSharedPtr<FJsonValue> JsonValue;
+
+    // Default constructor
+    FJsonValueStruct()
+        : Type(EJson::None), JsonValue(nullptr) {}
+
+    // Initialize with a shared JSON value
+	explicit FJsonValueStruct(TSharedPtr<FJsonValue> InValue)
+	: Type(InValue.IsValid() ? InValue->Type : EJson::None), JsonValue(InValue) {}
+    // Factory methods to create JSON values
+    static FJsonValueStruct FromBool(bool Value)
+    {
+        return FJsonValueStruct(MakeShared<FJsonValueBoolean>(Value));
+    }
+
+    static FJsonValueStruct FromInt(int32 Value)
+    {
+        return FJsonValueStruct(MakeShared<FJsonValueNumber>(static_cast<double>(Value)));
+    }
+
+    static FJsonValueStruct FromFloat(float Value)
+    {
+        return FJsonValueStruct(MakeShared<FJsonValueNumber>(static_cast<double>(Value)));
+    }
+
+    static FJsonValueStruct FromString(const FString& Value)
+    {
+        return FJsonValueStruct(MakeShared<FJsonValueString>(Value));
+    }
+
+    static FJsonValueStruct FromArray(const TArray<TSharedPtr<FJsonValue>>& Array)
+    {
+        return FJsonValueStruct(MakeShared<FJsonValueArray>(Array));
+    }
+
+    static FJsonValueStruct FromObject(const TSharedPtr<FJsonObject>& Object)
+    {
+        return FJsonValueStruct(MakeShared<FJsonValueObject>(Object));
+    }
+
+    // Type-checking methods
+    bool IsNull() const { return Type == EJson::None; }
+    bool IsBool() const { return Type == EJson::Boolean; }
+    bool IsNumber() const { return Type == EJson::Number; }
+    bool IsString() const { return Type == EJson::String; }
+    bool IsArray() const { return Type == EJson::Array; }
+    bool IsObject() const { return Type == EJson::Object; }
+
+    // Conversion methods
+    bool ToBool() const
+    {
+        return JsonValue.IsValid() && JsonValue->Type == EJson::Boolean ? JsonValue->AsBool() : false;
+    }
+
+    int32 ToInt() const
+    {
+        return JsonValue.IsValid() && JsonValue->Type == EJson::Number ? static_cast<int32>(JsonValue->AsNumber()) : 0;
+    }
+
+    float ToFloat() const
+    {
+        return JsonValue.IsValid() && JsonValue->Type == EJson::Number ? static_cast<float>(JsonValue->AsNumber()) : 0.0f;
+    }
+
+    FString ToString() const
+    {
+        return JsonValue.IsValid() && JsonValue->Type == EJson::String ? JsonValue->AsString() : TEXT("");
+    }
+
+    TArray<TSharedPtr<FJsonValue>> ToArray() const
+    {
+        return JsonValue.IsValid() && JsonValue->Type == EJson::Array ? JsonValue->AsArray() : TArray<TSharedPtr<FJsonValue>>();
+    }
+
+    TSharedPtr<FJsonObject> ToObject() const
+    {
+        return JsonValue.IsValid() && JsonValue->Type == EJson::Object ? JsonValue->AsObject() : nullptr;
+    }
+};
+
 /**
  * 
  */
@@ -221,6 +311,16 @@ private:
 
 	int64 GetTimestamp() const;
 
+	TSharedRef<FJsonObject> ConvertStringMapToJson(const TMap<FString, FString>& InputMap) const;
+
+	TSharedRef<FJsonObject> ConvertIntMapToJson(const TMap<FString, int32>& InputMap) const;
+
+	TSharedRef<FJsonObject> ConvertFloatMapToJson(const TMap<FString, float>& InputMap) const;
+
+	TSharedRef<FJsonObject> ConvertBoolMapToJson(const TMap<FString, bool>& InputMap) const;
+
+	TSharedRef<FJsonObject> ConvertJsonValueStructMapToJson(const TMap<FString, FJsonValueStruct>& InputMap) const;
+	
 	template <typename ValueType>
 	FString ConvertTMapToJson(const TMap<FString, ValueType>& InputMap) const;
 
