@@ -49,6 +49,7 @@ UENUM(Blueprintable)
 enum class EMongoDBActionType : uint8
 {
 	NONE							UMETA(DisplayName = "None")
+	,AGGREGATE 						UMETA(DisplayName = "Aggregate")
 	,DROP_COLLECTION				UMETA(DisplayName = "Drop Collection")
 	,CREATE_COLLECTION				UMETA(DisplayName = "Create Collection")
     ,FIND							UMETA(DisplayName = "Find")
